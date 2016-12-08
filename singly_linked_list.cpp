@@ -40,6 +40,7 @@ public:
    void PopBack();                  /*Remove the first element in list.complexity-O(n)*/
    void PopFront();                 /*Remove the first element in list.complexity-O(1) */
    void DeleteNode(int key);        /*Delete first matching  node of a given key.complexity-O(n)*/
+   void DeleteAllOccurences(int key); /*Delete all occurences of matching item . complexity - O(n)*/
    void PrintList(std::ostream& out);
 private:
    struct Node {
@@ -151,46 +152,48 @@ LinkedList::PopFront(){
    return;
 }
 
-/*Delete first matching  node of a given key*/
 void 
 LinkedList::DeleteNode(int key) {
-   Node *node,*prev;
-   node = head;
-   while(node != NULL){
-      if(node->item == key)
-         break;
-      prev = node;
-      node = node->next;
-   }
-   if(node == NULL)
-   {
-      std::cout << "Item not found in list \n";
-      return;
-   }
-   if(node == head){
-      if(node == tail){
-         std::cout << " Deleting Node with item " << node->item  << " - only node available in list \n";
-         delete node;
-         head = tail = NULL;
+   Node* current;
+   Node* prev = NULL;
+   for(current = head;current != NULL;current = current->next){
+      if(current->item == key){
+         if(prev != NULL){
+            prev->next = current->next;
+         } else {
+            head = head->next;
+         }
+         if(current == tail)
+            tail = prev;
+         free(current);
          return;
       }
-      prev = head;
-      head = head->next;
-      std::cout << " Deleting Node with item " << prev->item  << " - head node of list\n";
-      delete prev;
-      return;
+      prev = current;
    }
-   if(node == tail){
-      prev->next = NULL;
-      std::cout << " Deleting Node with item " << tail->item  << " - tail node of list\n";
-      delete tail;
-      tail = prev;
-      return;
+}
+
+/* Delete all occurences of matching item */
+void
+LinkedList::DeleteAllOccurences(int key) {
+   Node* current;
+   Node* prev = NULL;
+   Node* next; 
+   for(current = head;current != NULL;current = next){
+      next = current->next;
+      if(current->item != key){
+         prev = current;
+         continue;
+      }
+
+      if(prev != NULL){
+         prev->next = current->next;
+      } else {
+         head = current->next;
+      }
+      if(current == tail)
+         tail = prev;
+      free(current);
    }
-   prev->next = node->next;
-   std::cout << " Deleting Node with item " << node->item  << " -  middle  node of list\n";
-   delete node;
-   return;
 }
 
 /*Print whole list*/
@@ -248,6 +251,15 @@ insert_random_nos(LinkedList &new_list){
    }
 }
 
+void
+insert_multiple_nos(LinkedList &new_list){
+   int i;
+   for(i=0;i<11;i++) {
+      new_list.InsertFront(13);
+   }
+}
+
+
 
 int main() {
    LinkedList new_list;
@@ -257,4 +269,32 @@ int main() {
    LinkedList y(new_list);
    new_list.PrintList(std::cout);
    y.PrintList(std::cout);
+
+   new_list.InsertBack(14);
+   new_list.InsertFront(14);
+   new_list.PrintList(std::cout);
+   new_list.DeleteAllOccurences(14);
+   new_list.DeleteAllOccurences(15);
+
+
+   LinkedList new_list1;
+   //insert_multiple_nos(new_list1);
+   new_list1.InsertFront(14);
+   new_list1.InsertFront(13);
+   new_list1.InsertFront(14);
+   new_list1.InsertFront(13);
+   new_list1.InsertFront(14);
+   new_list1.InsertFront(13);
+   new_list1.InsertFront(14);
+   new_list1.InsertFront(13);
+   new_list1.PrintList(std::cout);
+   new_list1.DeleteAllOccurences(13);
+   new_list1.PrintList(std::cout);
+   new_list1.InsertFront(14);
+   new_list1.InsertFront(13);
+   new_list1.PrintList(std::cout);
+   new_list1.DeleteNode(14);
+   new_list1.PrintList(std::cout);
+   new_list1.InsertBack(14);
+   new_list1.PrintList(std::cout);
 }

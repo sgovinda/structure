@@ -69,10 +69,8 @@ BinarySearchTree::InsertItem(struct Node* root,int item){
    if(root == NULL){
       return CreateNewNode(item);
    }
-   if(data < root->left)   root->left = InsertItem(root->left);
-   else if(data > root->right)   root->left:w
-      InsertItem(root->left);
-
+   if(item < root->left->item)   root->left = InsertItem(root->left);
+   else if(item > root->right->item)   root->right = InsertItem(root->right);
 }
 
 int
